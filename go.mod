@@ -1,4 +1,4 @@
-module hello
+module webDav_go
 
 go 1.17
 
