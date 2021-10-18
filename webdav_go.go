@@ -20,15 +20,14 @@ func getAgs() (fullAddr string, path string) {
 
 	flag.Parse()
 
-	var argCount = len(flag.Args())
-
-	if argCount == 0 && *dir == "." {
+	var argCount = len(os.Args)
+	if argCount == 1 && *dir == "." {
 		flag.Usage()
 		os.Exit(0)
 	}
 
-	if argCount == 1 {
-		arg1 := flag.Args()[0]
+	if argCount == 2 {
+		arg1 := os.Args[1]
 
 		if reflect.TypeOf(arg1).String() == "string" {
 			*dir = arg1
