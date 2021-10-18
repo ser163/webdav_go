@@ -69,7 +69,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	fmt.Println("WebDav Sever run ...\n")
+	fmt.Println("WebDav Sever run ...")
 	fmt.Printf("Run as http://%s\n", addr)
 	fmt.Printf("Run directory %s\n", path)
 
