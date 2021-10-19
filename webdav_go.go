@@ -24,6 +24,8 @@ func getAgs() (fullAddr string,
 	userName string,
 	passWord string,
 	readMode bool,
+	logInfo string,
+	logStatus bool,
 ) {
 
 	var dir = flag.String("p", ".", "共享路径")
@@ -35,6 +37,8 @@ func getAgs() (fullAddr string,
 	var user = flag.String("user", "", "user name")
 	var pass = flag.String("pass", "", "password")
 	var readOnly = flag.Bool("read", false, "read only (defalut: false)")
+	var logFile = flag.String("F", "webdav.log", "log file name and path ")
+	var logStat = flag.Bool("log", false, "log file status (defalut: false)")
 
 	flag.Parse()
 
@@ -67,7 +71,8 @@ func getAgs() (fullAddr string,
 	userName = *user
 	passWord = *pass
 	readMode = *readOnly
-
+	logInfo = *logFile
+	logStatus = *logStat
 	return
 }
 
@@ -84,7 +89,7 @@ func PathExists(path string) (bool, error) {
 
 func main() {
 
-	addr, path, sslMode, keyFile, certFile, user, pass, readMode := getAgs()
+	addr, path, sslMode, keyFile, certFile, user, pass, readMode, logFile, logStat := getAgs()
 	// fmt.Println(addr, path, sslMode, keyFile, certFile, user, pass, readMode)
 	// 判断目录是否存在
 	p, err := PathExists(path)
@@ -94,17 +99,23 @@ func main() {
 		os.Exit(2)
 	}
 
-	//================
+	//=======开启日志=========
 	writer1 := &bytes.Buffer{}
 	writer2 := os.Stdout
-	writer3, err := os.OpenFile("webdav.log", os.O_WRONLY|os.O_CREATE, 0755)
-	if err != nil {
-		log.Fatalf("create file webdav.log failed: %v", err)
+	// 写入log
+	if logStat {
+		writer3, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE, 0755)
+		if err != nil {
+			log.Fatalf("create file %s failed: %v", logFile, err)
+		}
+		fmt.Println("Server Log Record Open!")
+		logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
+	} else {
+		logrus.SetOutput(io.MultiWriter(writer1, writer2))
 	}
 
-	logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
-
 	fmt.Println("WebDav Sever run ...")
+
 	var sslStr string
 	if sslMode {
 		sslStr = "https://"
