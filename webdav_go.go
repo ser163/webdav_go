@@ -141,12 +141,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println(user, pass)
 		if user != "" && pass != "" {
-			fmt.Println("Authenticate Check")
 			username, password, ok := req.BasicAuth()
 			if !ok {
-				w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
+				w.Header().Set("WWW-Authenticate", `Basic realm="webDav"`)
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
