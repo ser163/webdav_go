@@ -36,6 +36,24 @@ Usage of webDav_go:
    webDav_go -p "/opt/data/webdav" -a "192.168.0.11" -port 8081
 ```
 
+### 4.开启日志
+```
+   webDav_go -log true -F "/var/log/webdav.log"
+```
+### 5.只读模式
+```
+   webDav_go -R true
+```
+### 6.用户验证
+```
+   webDav_go -user "admin" -pass "123"
+```
+### 7.https模式
+```
+   webDav_go -ssl true -ssl-key "key.pem" --ssl-cert "cert.pem" -prot 443
+```
+
+
 ## 参考
 
 此程序参考: [Golang 实现简单WebDAV系统](https://www.cnblogs.com/singinger/p/13433780.html)
