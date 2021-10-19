@@ -28,9 +28,9 @@ func getAgs() (fullAddr string,
 	logStatus bool,
 ) {
 
-	var dir = flag.String("p", ".", "共享路径")
-	var addr = flag.String("a", "", "地址")
-	var port = flag.Int("port", 8080, "端口")
+	var dir = flag.String("p", ".", "share directory path")
+	var addr = flag.String("a", "", "IP Address")
+	var port = flag.Int("port", 8080, "port num")
 	var ssl = flag.Bool("ssl", false, "https: true http: false")
 	var key = flag.String("ssl-key", "key.pem", "https key file")
 	var cert = flag.String("ssl-cert", "cert.pem", "https cert file")
