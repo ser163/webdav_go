@@ -104,7 +104,7 @@ func main() {
 	writer2 := os.Stdout
 	// 写入log
 	if logStat {
-		writer3, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE, 0755)
+		writer3, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 		if err != nil {
 			var errInfo = fmt.Sprintf("Create file %s failed: %v", logFile, err)
 			log.Fatalf(errInfo)
