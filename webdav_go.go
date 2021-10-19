@@ -36,7 +36,7 @@ func getAgs() (fullAddr string,
 	var cert = flag.String("ssl-cert", "cert.pem", "https cert file")
 	var user = flag.String("user", "", "user name")
 	var pass = flag.String("pass", "", "password")
-	var readOnly = flag.Bool("read", false, "read only (defalut: false)")
+	var readOnly = flag.Bool("R", false, "read only (defalut: false)")
 	var logFile = flag.String("F", "webdav.log", "log file name and path ")
 	var logStat = flag.Bool("log", false, "log file status (defalut: false)")
 
@@ -90,7 +90,7 @@ func PathExists(path string) (bool, error) {
 func main() {
 
 	addr, path, sslMode, keyFile, certFile, user, pass, readMode, logFile, logStat := getAgs()
-	// fmt.Println(addr, path, sslMode, keyFile, certFile, user, pass, readMode)
+	// fmt.Println(addr, path, sslMode, keyFile, certFile, user, pass, readMode, logFile, logStat)
 	// 判断目录是否存在
 	p, err := PathExists(path)
 
@@ -106,7 +106,9 @@ func main() {
 	if logStat {
 		writer3, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE, 0755)
 		if err != nil {
-			log.Fatalf("create file %s failed: %v", logFile, err)
+			var errInfo = fmt.Sprintf("Create file %s failed: %v", logFile, err)
+			log.Fatalf(errInfo)
+			fmt.Errorf(errInfo)
 		}
 		fmt.Println("Server Log Record Open!")
 		logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
