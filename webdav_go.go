@@ -108,7 +108,6 @@ func main() {
 		if err != nil {
 			var errInfo = fmt.Sprintf("Create file %s failed: %v", logFile, err)
 			log.Fatalf(errInfo)
-			fmt.Errorf(errInfo)
 		}
 		fmt.Println("Server Log Record Open!")
 		logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
