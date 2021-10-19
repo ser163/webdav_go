@@ -5,9 +5,9 @@
 
 ## 未来需要支持的功能
 
-- [ ] https支持
+- [x]https支持
  
-- [ ] 加入http身份安全验证 
+- [x] 加入http身份安全验证 
 
 
 ## 使用帮助
@@ -35,5 +35,9 @@ Usage of webDav_go:
 ```
    webDav_go -p "/opt/data/webdav" -a "192.168.0.11" -port 8081
 ```
+
+## 参考
+
+此程序参考: [Golang 实现简单WebDAV系统](https://www.cnblogs.com/singinger/p/13433780.html)
 
 

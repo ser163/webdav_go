@@ -12,11 +12,25 @@ import (
 )
 
 // 获取参数
-func getAgs() (fullAddr string, path string) {
+func getAgs() (fullAddr string,
+	path string,
+	sslFlag bool,
+	keyFile string,
+	certFile string,
+	userName string,
+	passWord string,
+	readMode bool,
+) {
 
 	var dir = flag.String("p", ".", "共享路径")
 	var addr = flag.String("a", "", "地址")
 	var port = flag.Int("port", 8080, "端口")
+	var ssl = flag.Bool("ssl", false, "https: true http: false")
+	var key = flag.String("ssl-key", "key.pem", "https key file")
+	var cert = flag.String("ssl-cert", "cert.pem", "https cert file")
+	var user = flag.String("user", "", "user name")
+	var pass = flag.String("pass", "", "password")
+	var readOnly = flag.Bool("read", false, "read only (defalut: false)")
 
 	flag.Parse()
 
@@ -28,7 +42,6 @@ func getAgs() (fullAddr string, path string) {
 
 	if argCount == 2 {
 		arg1 := os.Args[1]
-
 		if reflect.TypeOf(arg1).String() == "string" {
 			*dir = arg1
 		} else {
@@ -44,6 +57,13 @@ func getAgs() (fullAddr string, path string) {
 	}
 
 	path = *dir
+	sslFlag = *ssl
+	keyFile = *key
+	certFile = *cert
+	userName = *user
+	passWord = *pass
+	readMode = *readOnly
+
 	return
 }
 
@@ -60,7 +80,9 @@ func PathExists(path string) (bool, error) {
 
 func main() {
 
-	addr, path := getAgs()
+	addr, path, sslMode, keyFile, certFile, user, pass, readMode := getAgs()
+	// fmt.Println(addr, path, sslMode, keyFile, certFile, user, pass, readMode)
+	// 判断目录是否存在
 	p, err := PathExists(path)
 
 	if !p {
@@ -69,13 +91,52 @@ func main() {
 	}
 
 	fmt.Println("WebDav Sever run ...")
-	fmt.Printf("Run as http://%s\n", addr)
+	var sslStr string
+	if sslMode {
+		sslStr = "https://"
+	} else {
+		sslStr = "http://"
+	}
+	fmt.Printf("Run as %s%s\n", sslStr, addr)
 	fmt.Printf("Run directory %s\n", path)
 
-	err = http.ListenAndServe(addr, &webdav.Handler{
+	fs := &webdav.Handler{
 		FileSystem: webdav.Dir(path),
 		LockSystem: webdav.NewMemLS(),
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		fmt.Println(user, pass)
+		if user != "" && pass != "" {
+			fmt.Println("Authenticate Check")
+			username, password, ok := req.BasicAuth()
+			if !ok {
+				w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			if username != user || password != pass {
+				http.Error(w, "WebDAV: need authorized!", http.StatusUnauthorized)
+				return
+			}
+		}
+		if readMode {
+			switch req.Method {
+			case "PUT", "DELETE", "PROPPATCH", "MKCOL", "COPY", "MOVE":
+				http.Error(w, "WebDAV: Read Only!!!", http.StatusForbidden)
+				return
+			}
+		}
+		// fmt.Println(req)
+		fs.ServeHTTP(w, req)
 	})
+
+	// 判断是否是ssl模式
+	if sslMode {
+		err = http.ListenAndServeTLS(addr, certFile, keyFile, nil)
+	} else {
+		err = http.ListenAndServe(addr, nil)
+	}
 
 	if err != nil {
 		fmt.Println(err)
