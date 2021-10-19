@@ -127,6 +127,10 @@ func main() {
 	fmt.Printf("Run as %s%s\n", sslStr, addr)
 	fmt.Printf("Run directory %s\n", path)
 
+	if readMode {
+		fmt.Println("*Server Read Only Mode!")
+	}
+
 	fs := &webdav.Handler{
 		FileSystem: webdav.Dir(path),
 		LockSystem: webdav.NewMemLS(),
