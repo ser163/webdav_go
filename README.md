@@ -3,11 +3,25 @@
   一个简易的go版 webdav 服务程序。
 
 
-## 未来需要支持的功能
+## 编译安装
 
-- [x] https支持
- 
-- [x] 加入http身份安全验证 
+### 下载源码
+```
+  git clone https://github.com/ser163/webdav_go
+```
+### 进入目录
+```
+   cd webdav
+```
+### 编译源码
+```
+   go mod download
+   go build -ldflags="-s -w"
+```
+### 运行程序
+```
+   ./webDav_go .
+```
 
 
 ## 使用帮助
