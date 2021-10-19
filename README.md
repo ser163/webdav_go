@@ -66,6 +66,10 @@ Usage of webDav_go:
 ```
    webDav_go -ssl true -ssl-key "key.pem" --ssl-cert "cert.pem" -prot 443
 ```
+### 8.Linux下在后台运行
+```
+   nohup ./webDav &
+```
 
 
 ## 参考
