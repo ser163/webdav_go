@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"reflect"
 	"strconv"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/webdav"
 )
 
@@ -90,6 +94,16 @@ func main() {
 		os.Exit(2)
 	}
 
+	//================
+	writer1 := &bytes.Buffer{}
+	writer2 := os.Stdout
+	writer3, err := os.OpenFile("webdav.log", os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		log.Fatalf("create file webdav.log failed: %v", err)
+	}
+
+	logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
+
 	fmt.Println("WebDav Sever run ...")
 	var sslStr string
 	if sslMode {
@@ -127,7 +141,8 @@ func main() {
 				return
 			}
 		}
-		// fmt.Println(req)
+		// 记录日志
+		logrus.Info(req.Method, " ", req.URL, " ", req.RemoteAddr)
 		fs.ServeHTTP(w, req)
 	})
 
