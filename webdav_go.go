@@ -131,6 +131,10 @@ func main() {
 		fmt.Println("*Server Read Only Mode!")
 	}
 
+	if user != "" && pass != "" {
+		fmt.Printf("UserName:%s,PassWord:%s\n", user, pass)
+	}
+
 	fs := &webdav.Handler{
 		FileSystem: webdav.Dir(path),
 		LockSystem: webdav.NewMemLS(),
