@@ -71,6 +71,24 @@ Usage of webDav_go:
    nohup ./webDav &
 ```
 
+## 挂载方法
+### windows下挂载
+  打开命令提示工具,从运行中输入cmd命令
+```
+   net use Y: http://127.0.0.1:8080/ 123  /user:admin /persistent:YES
+```
+  123 为服务器密码. http://127.0.0.1:8080/ 为服务器路径 persistent 为保存链接状态
+
+> 从Windows Vista起，微软就禁用了http形式的基本WebDAV验证形式（KB841215），必须使用https连接
+  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters
+找到BasicAuthLevel把这个值从1改为2，然后进控制面板，服务，把WebClient服务重启（没有启动的就启动它）。
+
+### Linux下挂载
+```
+   sudo apt install davfs2
+   sudo mount.davfs http://locaohost:8080/dav/ /opt/Backup/
+```
+
 
 ## 参考
 
